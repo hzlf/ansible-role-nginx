@@ -1,0 +1,115 @@
+# file: nginx/defaults/main.yml
+
+nginx_repo:           "http://hg.nginx.org/nginx"
+nginx_revision:       "release-1.9.9"
+
+nginx_user:           "www-data"
+nginx_group:          "www-data"
+nginx_uid:            33
+nginx_gid:            33
+
+nginx_dir:            "/etc/nginx"
+nginx_www_dir:        "/var/www"
+nginx_log_dir:        "/var/log/nginx"
+nginx_pid:            "/var/run/nginx.pid"
+
+nginx_conf_path:      "{{nginx_dir}}/nginx.conf"
+nginx_sbin_path:      "/usr/local/sbin/nginx"
+
+# sites
+nginx_sites: []
+nginx_enabled_sites: []
+
+nginx_http_realip_module: true
+nginx_naxsi_module: true
+
+# gzip-static
+nginx_gzip_static: true
+
+# gzip_module
+nginx_gzip: 'on'
+nginx_gzip_http_version: 1.1
+nginx_gzip_comp_level: 2
+nginx_gzip_proxied: expired no-cache no-store private auth
+nginx_gzip_vary: 'on'
+nginx_gzip_buffers: null
+nginx_gzip_min_length: 10240
+nginx_gzip_types:
+  - text/plain
+  - text/css
+  - text/xml
+  - text/csv
+  - text/javascript
+  - application/x-javascript
+  - application/xml
+  - application/xml+rss
+  - application/javascript
+  - application/postscript
+  - application/pdf
+  - application/ecmascript
+  - application/json
+  - image/svg+xml
+nginx_gzip_disable: "MSIE [1-6]\\."
+
+
+# headers_more_module configuration
+nginx_headers_more_version: "0.26"
+nginx_headers_more_url: "https://github.com/openresty/headers-more-nginx-module/archive/v{{nginx_headers_more_version}}.tar.gz"
+
+
+# http_auth_request_module configuration
+nginx_auth_request_release: "662785733552"
+nginx_auth_request_url: "http://mdounin.ru/hg/ngx_http_auth_request_module/archive/{{nginx_auth_request_release}}.tar.gz"
+
+
+# http_echo_module configuration
+nginx_echo_version: "0.58"
+nginx_echo_url: "https://github.com/openresty/echo-nginx-module/archive/v{{nginx_echo_version}}.tar.gz"
+
+
+# http_realip_module configuration
+nginx_realip_header: "X-Forwarded-For"
+nginx_realip_addresses: ["127.0.0.1"]
+nginx_realip_real_ip_recursive: "off"
+
+
+# naxsi_module configuration
+nginx_naxsi_version: "0.54"
+nginx_naxsi_url: "https://github.com/nbs-system/naxsi/archive/{{nginx_naxsi_version}}.tar.gz"
+
+# ngx_pagespeed_module configuration
+nginx_ngx_pagespeed_version: 1.9.32.3
+
+# OpenSSL configuration
+openssl_revision: "OpenSSL_1_0_2c"
+openssl_repo: "https://github.com/openssl/openssl"
+
+
+nginx_module_include_flags:
+  http_stub_status_module:  "--with-http_stub_status_module"
+  http_ssl_module:          "--with-http_ssl_module"
+  openssl:                  "--with-openssl=/tmp/openssl-repo"
+  http_gzip_static_module:  "--with-http_gzip_static_module"
+  headers_more_module:      "--add-module=/tmp/headers-more-nginx-module-{{nginx_headers_more_version}}"
+  http_auth_request_module: "--add-module=/tmp/ngx_http_auth_request_module-{{nginx_auth_request_release}}"
+  http_echo_module:         "--add-module=/tmp/echo-nginx-module-{{nginx_echo_version}}"
+  google_perftools_module:  "--with-google_perftools_module"
+  ipv6_module:              "--with-ipv6"
+  http_real_ip_module:      "--with-http_realip_module"
+  #http_spdy_module:         "--with-http_spdy_module" # TODO: moved to http2 module
+  http_sub_module:          "--with-http_sub_module"
+  naxsi_module:             "--add-module=/tmp/naxsi-{{nginx_naxsi_version}}/naxsi_src"
+  ngx_pagespeed_module:     "--add-module=/tmp/ngx_pagespeed-release-{{nginx_ngx_pagespeed_version}}-beta"
+  #geoip_module:             "--with-http_geoip_module --with-ld-opt='-Wl,-R,/usr/local/lib -L /usr/local/lib'"
+
+
+nginx_default_configure_flags: "--prefix='{{nginx_www_dir}}' --conf-path='{{nginx_conf_path}}' --sbin-path='{{nginx_sbin_path}}' --error-log-path='{{nginx_log_dir}}/error.log' --http-log-path='{{nginx_log_dir}}/access.log' --pid-path='{{nginx_pid}}' --user='{{nginx_user}}' --group='{{nginx_group}}' "
+
+nginx_configure_flags: "{{nginx_default_configure_flags}}{% for key, flag in nginx_module_include_flags.items() %} {{flag}}{% endfor %}"
+#nginx_configure_flags: "{{nginx_default_configure_flags}}{% for key, enabled in nginx_modules.items() %}{% if (enabled == true or enabled == 'True') and nginx_module_include_flags[key] is defined %}{{ ' ' + nginx_module_include_flags[key] }}{% elif key in nginx_module_exclude_flags.keys() and ( enabled == false or enabled == 'False' ) %}{{ ' ' + nginx_module_exclude_flags[key]   }}{% endif %}{% endfor %}"
+
+
+
+
+
+
