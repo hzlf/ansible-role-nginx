@@ -81,7 +81,7 @@ nginx_naxsi_url: "https://github.com/nbs-system/naxsi/archive/{{nginx_naxsi_vers
 nginx_ngx_pagespeed_version: 1.9.32.3
 
 # OpenSSL configuration
-openssl_revision: "OpenSSL_1_0_2c"
+openssl_revision: "OpenSSL_1_0_2h"
 openssl_repo: "https://github.com/openssl/openssl"
 
 
